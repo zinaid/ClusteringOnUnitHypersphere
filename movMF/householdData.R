@@ -2,6 +2,8 @@
 library(mlbench)
 library(movMF)
 library(tidyverse)
+library(caret)
+library(HSAUR2)
 
 data(household)
 

@@ -2,6 +2,7 @@
 library(mlbench)
 library(movMF)
 library(tidyverse)
+library(caret)
 
 # Load Wisconsin breast cancer data
 data(BreastCancer)

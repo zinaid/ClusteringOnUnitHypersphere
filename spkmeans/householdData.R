@@ -43,20 +43,6 @@ levels(true_labels)
 confusion_matrix <- confusionMatrix(cluster_labels, true_labels)
 print(confusion_matrix)
 
-# Calculate precision and recall for household female
-precision_female <- 19 / (19 + 6)
-recall_female <- 19 / (19 + 1)
-
-# Calculate precision and recall for versicolor
-precision_male <- 14 / (14 + 1)
-recall_male <- 14 / (14 + 6)
-
-macro_precision <- mean(c(precision_female, precision_male))
-macro_precision
-
-macro_recall <- mean(c(recall_female, recall_male))
-macro_recall
-
 # Female
 true_positives_female <- confusion_matrix$table[1, 1]
 false_positives_female <- confusion_matrix$table[1, 2]
