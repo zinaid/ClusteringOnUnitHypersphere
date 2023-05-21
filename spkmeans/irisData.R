@@ -22,7 +22,7 @@ iris <- iris[, -5]
 # Normalizing data
 X_normalized <- scale(iris)
 
-iris_matrix <- as.matrix(iris)
+iris_matrix <- as.matrix(X_normalized)
 
 # Perform clustering using skmeans
 skmeans_result <- skmeans(iris_matrix, k = 3)

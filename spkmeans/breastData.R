@@ -43,7 +43,7 @@ BreastCancer <- BreastCancer[, -10]
 X_normalized <- scale(BreastCancer)
 
 # Converting to matrix
-BreastCancer_matrix <- as.matrix(BreastCancer)
+BreastCancer_matrix <- as.matrix(X_normalized)
 
 # Performing skmeans
 skmeans_result <- skmeans(BreastCancer_matrix, k = 2)

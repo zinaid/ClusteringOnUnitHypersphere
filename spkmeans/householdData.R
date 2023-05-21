@@ -17,7 +17,7 @@ household <- household[, -5]
 
 # Normalizing data and transforming it to matrix
 X_normalized <- scale(household)
-household_matrix <- as.matrix(household)
+household_matrix <- as.matrix(X_normalized)
 
 # Perform clustering using skmeans
 skmeans_result <- skmeans(household_matrix, k = 2)
