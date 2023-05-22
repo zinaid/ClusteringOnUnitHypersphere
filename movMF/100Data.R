@@ -42,24 +42,24 @@ confusion_matrix <- confusionMatrix(cluster_labels, true_labels)
 # Print confusion matrix
 print(confusion_matrix)
 
-# Female
-true_positives_female <- confusion_matrix$table[1, 1]
-false_positives_female <- confusion_matrix$table[1, 2]
-false_negatives_female <- confusion_matrix$table[2, 1]
+# Cluster 1
+true_positives_cluster1 <- confusion_matrix$table[1, 1]
+false_positives_cluster1 <- confusion_matrix$table[1, 2]
+false_negatives_cluster1 <- confusion_matrix$table[2, 1]
 
-macro_recall_female <- true_positives_female / (true_positives_female + false_negatives_female)
-macro_precision_female <- true_positives_female / (true_positives_female + false_positives_female)
+macro_recall_cluster1 <- true_positives_cluster1 / (true_positives_cluster1 + false_negatives_cluster1)
+macro_precision_cluster1 <- true_positives_cluster1 / (true_positives_cluster1 + false_positives_cluster1)
 
-# Male
+# Cluster 2
 true_positives_male <- confusion_matrix$table[2, 2]
 false_positives_male <- confusion_matrix$table[2, 1]
 false_negatives_male <- confusion_matrix$table[1, 2]
 
-macro_recall_male <- true_positives_male / (true_positives_male + false_negatives_male)
-macro_precision_male <- true_positives_male / (true_positives_male + false_positives_male)
+macro_recall_cluster2 <- true_positives_cluster2 / (true_positives_cluster2 + false_negatives_cluster2)
+macro_precision_cluster2 <- true_positives_cluster2 / (true_positives_cluster2 + false_positives_cluster2)
 
-macro_recall <- mean(c(macro_recall_female, macro_recall_male))
-macro_precision <- mean(c(macro_precision_female, macro_precision_male))
+macro_recall <- mean(c(macro_recall_cluster1, macro_recall_cluster2))
+macro_precision <- mean(c(macro_precision_cluster1, macro_precision_cluster2))
 
 print(paste("Recall:", macro_recall))
 print(paste("Precision:", macro_precision))
