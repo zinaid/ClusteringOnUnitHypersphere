@@ -1,8 +1,9 @@
 library("readxl")
+library(mlbench)
+library(movMF)
 library(tidyverse)
-library(skmeans)
-library(cluster)
 library(caret)
+
 my_data <- read_excel(file.choose())
 head(my_data)
 true_labels <- my_data$cluster
@@ -51,9 +52,9 @@ macro_recall_cluster1 <- true_positives_cluster1 / (true_positives_cluster1 + fa
 macro_precision_cluster1 <- true_positives_cluster1 / (true_positives_cluster1 + false_positives_cluster1)
 
 # Cluster 2
-true_positives_male <- confusion_matrix$table[2, 2]
-false_positives_male <- confusion_matrix$table[2, 1]
-false_negatives_male <- confusion_matrix$table[1, 2]
+true_positives_cluster2 <- confusion_matrix$table[2, 2]
+false_positives_cluster2 <- confusion_matrix$table[2, 1]
+false_negatives_cluster2 <- confusion_matrix$table[1, 2]
 
 macro_recall_cluster2 <- true_positives_cluster2 / (true_positives_cluster2 + false_negatives_cluster2)
 macro_precision_cluster2 <- true_positives_cluster2 / (true_positives_cluster2 + false_positives_cluster2)
