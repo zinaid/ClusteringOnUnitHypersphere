@@ -6,6 +6,21 @@ library(caret)
 
 # Load Iris dataset
 data(iris)
+
+# Normalize data points to unit sphere
+normalize_to_unit_sphere <- function(data) {
+    # Center the data
+    centered_data <- data - colMeans(data)
+
+    # Compute Euclidean norms
+    norms <- sqrt(rowSums(centered_data^2))
+
+    # Normalize to unit length
+    unit_data <- centered_data / norms
+
+    return(unit_data)
+}
+
 # True class labels
 true_labels <- iris$Species
 # Create a vector of the new class labels
@@ -19,13 +34,25 @@ print(true_labels)
 # Removing true labels
 iris <- iris[, -5]
 
-# Normalizing data
-X_normalized <- scale(iris)
+iris_matrix <- as.matrix(iris)
 
-iris_matrix <- as.matrix(X_normalized)
+# Normalizing data
+normalized_data <- normalize_to_unit_sphere(iris_matrix)
+head(normalized_data)
+
+# Check if data belongs to the unit sphere
+norms <- sqrt(rowSums(normalized_data^2))
+mean_norm <- mean(norms)
+
+if (abs(mean_norm - 1) < 0.01) {
+    print("The data belongs to the unit sphere.")
+} else {
+    print("The data does not belong to the unit sphere.")
+}
+
 set.seed(123)
 # Perform clustering using skmeans
-skmeans_result <- skmeans(iris_matrix, k = 3)
+skmeans_result <- skmeans(normalized_data, k = 3)
 
 # Print cluster assignments
 skmeans_result$cluster
@@ -83,4 +110,3 @@ macro_precision <- mean(c(precision_setosa, precision_versicolor, precision_virg
 
 print(paste("Recall:", macro_recall))
 print(paste("Precision:", macro_precision))
-
