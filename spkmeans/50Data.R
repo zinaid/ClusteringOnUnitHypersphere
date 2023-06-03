@@ -3,9 +3,16 @@ library(tidyverse)
 library(skmeans)
 library(cluster)
 library(caret)
-
 my_data <- read_excel(file.choose())
 head(my_data)
+true_labels <- my_data$cluster
+print(true_labels)
+my_data$x <- as.numeric(as.character(my_data$x))
+my_data$y <- as.numeric(as.character(my_data$y))
+my_data$z <- as.numeric(as.character(my_data$z))
+levels(true_labels)
+
+data <- my_data[, -4]
 
 # Check if data belongs to the unit sphere
 norms <- sqrt(my_data$x^2 + my_data$y^2 + my_data$z^2)
@@ -17,18 +24,8 @@ if (abs(mean_norm - 1) < 0.01) {
     print("The data does not belong to the unit sphere.")
 }
 
-true_labels <- my_data$cluster
-print(true_labels)
-my_data$x <- as.numeric(as.character(my_data$x))
-my_data$y <- as.numeric(as.character(my_data$y))
-my_data$z <- as.numeric(as.character(my_data$z))
-levels(true_labels)
-
-data <- my_data[, -4]
-
 data_matrix <- as.matrix(data)
-
-set.seed(123)
+# set.seed(123)
 # Perform clustering using skmeans
 skmeans_result <- skmeans(data_matrix, k = 2)
 

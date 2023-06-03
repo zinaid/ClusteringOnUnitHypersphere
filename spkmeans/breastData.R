@@ -62,6 +62,16 @@ BreastCancer_matrix <- as.matrix(BreastCancer)
 normalized_data <- normalize_to_unit_sphere(BreastCancer_matrix)
 head(normalized_data)
 
+# Check if data belongs to the unit sphere
+norms <- sqrt(rowSums(normalized_data^2))
+mean_norm <- mean(norms)
+
+if (abs(mean_norm - 1) < 0.01) {
+    print("The data belongs to the unit sphere.")
+} else {
+    print("The data does not belong to the unit sphere.")
+}
+
 set.seed(123)
 # Performing skmeans
 skmeans_result <- skmeans(normalized_data, k = 2)

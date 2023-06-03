@@ -23,7 +23,7 @@ iris <- iris[, -5]
 X_normalized <- scale(iris)
 
 iris_matrix <- as.matrix(X_normalized)
-
+set.seed(123)
 # Perform clustering using skmeans
 skmeans_result <- skmeans(iris_matrix, k = 3)
 
@@ -83,3 +83,4 @@ macro_precision <- mean(c(precision_setosa, precision_versicolor, precision_virg
 
 print(paste("Recall:", macro_recall))
 print(paste("Precision:", macro_precision))
+

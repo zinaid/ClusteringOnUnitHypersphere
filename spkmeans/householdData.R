@@ -33,7 +33,16 @@ household_matrix <- as.matrix(household)
 
 # Normalizing data and transforming it to matrix
 normalized_data <- normalize_to_unit_sphere(household_matrix)
-head(normalized_data)
+
+# Check if data belongs to the unit sphere
+norms <- sqrt(rowSums(normalized_data^2))
+mean_norm <- mean(norms)
+
+if (abs(mean_norm - 1) < 0.01) {
+    print("The data belongs to the unit sphere.")
+} else {
+    print("The data does not belong to the unit sphere.")
+}
 
 set.seed(123)
 # Perform clustering using skmeans
