@@ -40,3 +40,30 @@ Current algorithms:
 <tbody>
 </tbody>
 </table>
+
+As for the generated data we have used vMF distribution. For the first simulation we have generated 100 data points on the unit sphere, belonging to two clusters (50/50). For the first cluster we have used mean direction of v=[1,0,0] and concentration parameter kappa = 15. For the second cluster we have used mean direction of kappa=[0,1,0] and kappa=15. Data belongs to S3 space because it is normalized to lie on a unit sphere.
+
+<table>
+<thead>
+<th>Dataset</th>
+<th>spkmeans</th>
+<th>movMF</th>
+</thead>
+<tr>
+<td>100vMF</td>
+<td>recall - 0.74; precision - 0.742</td>
+<td>recall - 0.56; precision - 0.77</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tbody>
+</tbody>
+</table>

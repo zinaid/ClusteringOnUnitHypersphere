@@ -12,16 +12,16 @@ my_data$x <- as.numeric(as.character(my_data$x))
 my_data$y <- as.numeric(as.character(my_data$y))
 my_data$z <- as.numeric(as.character(my_data$z))
 
-household <- my_data[, -4]
-X_normalized <- scale(household)
+data <- my_data[, -4]
+X_normalized <- scale(data)
 
-household_matrix <- as.matrix(household)
+data_matrix <- as.matrix(X_normalized)
 # Performing movMF clustering
 k <- 2 # number of clusters
-fit <- movMF(household_matrix, k = k)
+fit <- movMF(data_matrix, k = k)
 
 # Extract cluster assignments
-cluster_assignments <- predict(fit, household_matrix)
+cluster_assignments <- predict(fit, data_matrix)
 
 true_labels <- as.factor(true_labels)
 levels(true_labels)

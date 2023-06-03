@@ -12,24 +12,26 @@ my_data$y <- as.numeric(as.character(my_data$y))
 my_data$z <- as.numeric(as.character(my_data$z))
 levels(true_labels)
 
-household <- my_data[, -4]
-X_normalized <- scale(household)
+data <- my_data[, -4]
+X_normalized <- scale(data)
 
-household_matrix <- as.matrix(household)
+data_matrix <- as.matrix(X_normalized)
 # Perform clustering using skmeans
-skmeans_result <- skmeans(household_matrix, k = 2)
+skmeans_result <- skmeans(data_matrix, k = 2)
 
+
+# Transforming it to factors
+true_labels <- as.factor(true_labels)
+
+# Create lookup table and assign cluster results to levels in true_labels
+lookup_table <- data.frame(cluster = c(1, 2), label = levels(true_labels))
 
 # Map cluster assignments to string labels using lookup table
 cluster_labels <- lookup_table[skmeans_result$cluster, "label"]
 
+
 # Transforming it to factors
 cluster_labels <- as.factor(cluster_labels)
-true_labels <- as.factor(true_labels)
-
-
-# Create lookup table and assign cluster results to levels in true_labels
-lookup_table <- data.frame(cluster = c(1, 2), label = levels(true_labels))
 
 # Checking levels
 levels(cluster_labels)
