@@ -8,6 +8,20 @@ library(HSAUR2)
 # Loading dataset household
 data(household)
 
+# Normalize data points to unit sphere
+normalize_to_unit_sphere <- function(data) {
+    # Center the data
+    centered_data <- data - colMeans(data)
+
+    # Compute Euclidean norms
+    norms <- sqrt(rowSums(centered_data^2))
+
+    # Normalize to unit length
+    unit_data <- centered_data / norms
+
+    return(unit_data)
+}
+
 # Taking true labels
 true_labels <- household$gender
 print(true_labels)
@@ -15,10 +29,13 @@ print(true_labels)
 # Removing the cluster column/true label
 household <- household[, -5]
 
-# Normalizing data and transforming it to matrix
-X_normalized <- scale(household)
-household_matrix <- as.matrix(X_normalized)
+household_matrix <- as.matrix(household)
 
+# Normalizing data and transforming it to matrix
+normalized_data <- normalize_to_unit_sphere(household_matrix)
+head(normalized_data)
+
+set.seed(123)
 # Perform clustering using skmeans
 skmeans_result <- skmeans(household_matrix, k = 2)
 
