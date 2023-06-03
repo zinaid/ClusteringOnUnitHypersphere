@@ -6,6 +6,20 @@ library(cluster)
 library(caret)
 library(HSAUR2)
 
+# Normalize data points to unit sphere
+normalize_to_unit_sphere <- function(data) {
+    # Center the data
+    centered_data <- data - colMeans(data)
+
+    # Compute Euclidean norms
+    norms <- sqrt(rowSums(centered_data^2))
+
+    # Normalize to unit length
+    unit_data <- centered_data / norms
+
+    return(unit_data)
+}
+
 # Load Wisconsin breast cancer data
 data(BreastCancer)
 
@@ -40,13 +54,17 @@ BreastCancer <- BreastCancer[, -1]
 BreastCancer <- BreastCancer[, -10]
 
 # Normalizing data
-X_normalized <- scale(BreastCancer)
+# X_normalized <- scale(BreastCancer)
 
 # Converting to matrix
-BreastCancer_matrix <- as.matrix(X_normalized)
+BreastCancer_matrix <- as.matrix(BreastCancer)
 
+normalized_data <- normalize_to_unit_sphere(BreastCancer_matrix)
+head(normalized_data)
+
+set.seed(123)
 # Performing skmeans
-skmeans_result <- skmeans(BreastCancer_matrix, k = 2)
+skmeans_result <- skmeans(normalized_data, k = 2)
 
 # Printig results
 skmeans_result$cluster
