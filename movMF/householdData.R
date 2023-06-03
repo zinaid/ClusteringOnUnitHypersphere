@@ -5,6 +5,19 @@ library(tidyverse)
 library(caret)
 library(HSAUR2)
 
+normalize_to_unit_sphere <- function(data) {
+    # Center the data
+    centered_data <- data - colMeans(data)
+
+    # Compute Euclidean norms
+    norms <- sqrt(rowSums(centered_data^2))
+
+    # Normalize to unit length
+    unit_data <- centered_data / norms
+
+    return(unit_data)
+}
+
 data(household)
 
 # Taking true labels
@@ -15,15 +28,28 @@ print(true_labels)
 household <- household[, -5]
 
 # Normalizing data and transforming it to matrix
-X_normalized <- scale(household)
-household_matrix <- as.matrix(X_normalized)
+household_matrix <- as.matrix(household)
 
+# Normalizing data and transforming it to matrix
+normalized_data <- normalize_to_unit_sphere(household_matrix)
+
+# Check if data belongs to the unit sphere
+norms <- sqrt(rowSums(normalized_data^2))
+mean_norm <- mean(norms)
+
+if (abs(mean_norm - 1) < 0.01) {
+    print("The data belongs to the unit sphere.")
+} else {
+    print("The data does not belong to the unit sphere.")
+}
+
+set.seed(123)
 # Performing movMF clustering
 k <- 2 # number of clusters
-fit <- movMF(household_matrix, k = k)
+fit <- movMF(normalized_data, k = k)
 
 # Extract cluster assignments
-cluster_assignments <- predict(fit, household_matrix)
+cluster_assignments <- predict(fit, normalized_data)
 
 # Create lookup table
 lookup_table <- data.frame(cluster = 1:k, label = levels(true_labels))

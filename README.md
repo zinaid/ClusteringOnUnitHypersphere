@@ -24,17 +24,17 @@ Current algorithms:
 </thead>
 <tr>
 <td>Iris</td>
-<td>recall - 0.82; precision - 0.828</td>
+<td>recall - 0.747; precision - 0.787</td>
 <td></td>
 </tr>
 <tr>
 <td>Household</td>
-<td>recall - 0.875; precision - 0.9</td>
+<td>recall - 0.825; precision - 0.847</td>
 <td>recall - 0.925; precision - 0.935</td>
 </tr>
 <tr>
 <td>Breast cancer</td>
-<td>recall - 0.968; precision - 0.962</td>
+<td>recall - 0.976; precision - 0.967</td>
 <td>recall - 0.916; precision - 0.945</td>
 </tr>
 <tbody>
@@ -55,8 +55,8 @@ As for the generated data we have used vMF distribution. For the first simulatio
 <td>recall - 0.56; precision - 0.77</td>
 </tr>
 <tr>
-<td></td>
-<td></td>
+<td>50vMF</td>
+<td>recall - 0.66; precision - 0.66</td>
 <td></td>
 </tr>
 <tr>
