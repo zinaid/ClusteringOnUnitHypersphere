@@ -25,23 +25,23 @@ Current algorithms:
 <tr>
 <td>Iris</td>
 <td>recall - 0.747; precision - 0.787</td>
-<td></td>
+<td>recall - 0.7; precision - 0.712</td>
 </tr>
 <tr>
 <td>Household</td>
 <td>recall - 0.825; precision - 0.847</td>
-<td>recall - 0.925; precision - 0.935</td>
+<td>recall - 0.7; precision - 0.708</td>
 </tr>
 <tr>
 <td>Breast cancer</td>
 <td>recall - 0.976; precision - 0.967</td>
-<td>recall - 0.916; precision - 0.945</td>
+<td>recall - 0.977; precision - 0.963</td>
 </tr>
 <tbody>
 </tbody>
 </table>
 
-As for the generated data we have used vMF distribution. For the first simulation we have generated 100 data points on the unit sphere, belonging to two clusters (50/50). For the first cluster we have used mean direction of v=[1,0,0] and concentration parameter kappa = 15. For the second cluster we have used mean direction of kappa=[0,1,0] and kappa=15. Data belongs to S3 space because it is normalized to lie on a unit sphere.
+As for the generated data we have used vMF distribution. For the first simulation we have generated 100 data points on the unit sphere, belonging to two clusters (50/50). For the first cluster we have used mean direction of v=[1,0,0] and concentration parameter kappa = 15. For the second cluster we have used mean direction of kappa=[0,1,0] and kappa=15. Data belongs to S3 space because it is normalized to lie on a unit sphere. For the second dataset we have generated 50 data points on the unit sphere, belonging to two clusters (25/25). For the first cluster we have used mean direction of v=[1,1,1] and kappa = 50. For the second cluster we have used mean direction of kappa=[-1,-1,-1] and kappa = 50. Data is normalized and lies of the unit sphere surface.
 
 <table>
 <thead>
@@ -51,13 +51,13 @@ As for the generated data we have used vMF distribution. For the first simulatio
 </thead>
 <tr>
 <td>100vMF</td>
-<td>recall - 0.74; precision - 0.742</td>
-<td>recall - 0.56; precision - 0.77</td>
+<td>recall - 0.52; precision - 0.568</td>
+<td>recall - 0.52; precision - 0.57</td>
 </tr>
 <tr>
 <td>50vMF</td>
-<td>recall - 0.66; precision - 0.66</td>
-<td></td>
+<td>recall - 0.84; precision - 0.84</td>
+<td>recall - 0.86; precision - 0.89</td>
 </tr>
 <tr>
 <td></td>
