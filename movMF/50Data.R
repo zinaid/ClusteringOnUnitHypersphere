@@ -25,7 +25,7 @@ if (abs(mean_norm - 1) < 0.01) {
 } else {
     print("The data does not belong to the unit sphere.")
 }
-set.seed(123)
+#set.seed(123)
 # Performing movMF clustering
 k <- 2 # number of clusters
 fit <- movMF(data_matrix, k = k)

@@ -28,7 +28,7 @@ data <- my_data[, -4]
 
 data_matrix <- as.matrix(data)
 
-set.seed(123)
+# set.seed(123)
 # Perform clustering using skmeans
 skmeans_result <- skmeans(data_matrix, k = 2)
 

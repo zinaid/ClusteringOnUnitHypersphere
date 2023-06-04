@@ -7,6 +7,20 @@ library(caret)
 
 data(iris)
 
+normalize_to_unit_sphere <- function(data) {
+    # Center the data
+    centered_data <- data - colMeans(data)
+
+    # Compute Euclidean norms
+    norms <- sqrt(rowSums(centered_data^2))
+
+    # Normalize to unit length
+    unit_data <- centered_data / norms
+
+    return(unit_data)
+}
+
+
 # Taking true labels
 true_labels <- iris$Species
 print(true_labels)
@@ -15,15 +29,27 @@ print(true_labels)
 iris <- iris[, -5]
 
 # Normalizing data and transforming it to matrix
-X_normalized <- scale(iris)
-iris_matrix <- as.matrix(X_normalized)
+iris_matrix <- as.matrix(iris)
+
+# Normalizing data and transforming it to matrix
+normalized_data <- normalize_to_unit_sphere(iris_matrix)
+
+# Check if data belongs to the unit sphere
+norms <- sqrt(rowSums(normalized_data^2))
+mean_norm <- mean(norms)
+
+if (abs(mean_norm - 1) < 0.01) {
+    print("The data belongs to the unit sphere.")
+} else {
+    print("The data does not belong to the unit sphere.")
+}
 
 # Performing movMF clustering
 k <- 3 # number of clusters
-fit <- movMF(iris_matrix, k = k)
+fit <- movMF(normalized_data, k = k)
 
 # Extract cluster assignments
-cluster_assignments <- predict(fit, iris_matrix)
+cluster_assignments <- predict(fit, normalized_data)
 
 # Create lookup table
 lookup_table <- data.frame(cluster = 1:k, label = levels(true_labels))

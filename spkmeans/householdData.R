@@ -44,7 +44,7 @@ if (abs(mean_norm - 1) < 0.01) {
     print("The data does not belong to the unit sphere.")
 }
 
-set.seed(123)
+# set.seed(123)
 # Perform clustering using skmeans
 skmeans_result <- skmeans(household_matrix, k = 2)
 

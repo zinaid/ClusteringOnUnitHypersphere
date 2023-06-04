@@ -1,12 +1,12 @@
 library(movMF)
 
-cluster1_mean <- c(1, 0, 0)
+cluster1_mean <- c(1, 1, 1)
 cluster1_kappa <- 50
-cluster2_mean <- c(-1, 0, 0)
+cluster2_mean <- c(-1, -1, -1)
 cluster2_kappa <- 50
 
 # Generate data
-set.seed(123)
+# set.seed(123)
 cluster1_data <- rmovMF(25, cluster1_mean, cluster1_kappa)
 cluster2_data <- rmovMF(25, cluster2_mean, cluster2_kappa)
 
@@ -30,4 +30,4 @@ data <- rbind(cluster1_df, cluster2_df)
 data
 # Save to Excel file
 library(writexl)
-write_xlsx(data, "data/50vMF.xlsx")
+write_xlsx(data, "data/50.xlsx")
