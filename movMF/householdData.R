@@ -37,7 +37,7 @@ if (abs(mean_norm - 1) < 0.01) {
 }
 
 # Perform clustering using movMF
-set.seed(123)
+#set.seed(123)
 movmf_result <- movMF(normalized_data, k = 2)
 
 # Check structure of movmf_result
