@@ -7,18 +7,11 @@ library(caret)
 # Load Iris dataset
 data(iris)
 
-# Normalize data points to unit sphere
-normalize_to_unit_sphere <- function(data) {
-    # Center the data
-    centered_data <- data - colMeans(data)
-
-    # Compute Euclidean norms
-    norms <- sqrt(rowSums(centered_data^2))
-
-    # Normalize to unit length
-    unit_data <- centered_data / norms
-
-    return(unit_data)
+# Normalize each row by its row sum
+rowwise_normalization <- function(data) {
+  row_sums <- rowSums(data)
+  normalized_data <- sweep(data, 1, row_sums, FUN = "/")
+  return(normalized_data)
 }
 
 # True class labels
@@ -37,7 +30,7 @@ iris <- iris[, -5]
 iris_matrix <- as.matrix(iris)
 
 # Normalizing data
-normalized_data <- normalize_to_unit_sphere(iris_matrix)
+normalized_data <- rowwise_normalization(iris_matrix)
 head(normalized_data)
 
 # Check if data belongs to the unit sphere

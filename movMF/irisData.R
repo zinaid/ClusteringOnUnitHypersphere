@@ -3,21 +3,20 @@ library(mlbench)
 library(movMF)
 library(tidyverse)
 library(caret)
+library(writexl)
 
 
 data(iris)
 
-normalize_to_unit_sphere <- function(data) {
-    # Center the data
-    centered_data <- data - colMeans(data)
+normalized_data_with_clusters <- cbind(as.data.frame(iris))
 
-    # Compute Euclidean norms
-    norms <- sqrt(rowSums(centered_data^2))
+# Save to Excel file
+write_xlsx(iris, "iris.xlsx")
 
-    # Normalize to unit length
-    unit_data <- centered_data / norms
-
-    return(unit_data)
+rowwise_normalization <- function(data) {
+  row_sums <- rowSums(data)
+  normalized_data <- sweep(data, 1, row_sums, FUN = "/")
+  return(normalized_data)
 }
 
 
@@ -32,7 +31,7 @@ iris <- iris[, -5]
 iris_matrix <- as.matrix(iris)
 
 # Normalizing data and transforming it to matrix
-normalized_data <- normalize_to_unit_sphere(iris_matrix)
+normalized_data <- rowwise_normalization(iris_matrix)
 
 # Check if data belongs to the unit sphere
 norms <- sqrt(rowSums(normalized_data^2))
@@ -44,30 +43,28 @@ if (abs(mean_norm - 1) < 0.01) {
     print("The data does not belong to the unit sphere.")
 }
 
-# Performing movMF clustering
-k <- 3 # number of clusters
-fit <- movMF(normalized_data, k = k)
+# Perform clustering using movMF
+#set.seed(123)
+movmf_result <- movMF(normalized_data, k = 3)
 
-# Extract cluster assignments
-cluster_assignments <- predict(fit, normalized_data)
-
-# Create lookup table
-lookup_table <- data.frame(cluster = 1:k, label = levels(true_labels))
+# Deriving cluster assignments from the P matrix (probabilities)
+cluster_labels <- apply(movmf_result$P, 1, which.max)
 
 # Map cluster assignments to string labels using lookup table
-cluster_labels <- lookup_table$label[cluster_assignments]
+lookup_table <- data.frame(cluster = c(1, 2, 3), label = levels(true_labels))
 
-# Reorder levels of cluster_labels to match true_labels
+# Map cluster assignments to string labels
+cluster_labels <- lookup_table[cluster_labels, "label"]
+
+# Ensure that cluster_labels and true_labels have the same levels
 cluster_labels <- factor(cluster_labels, levels = levels(true_labels))
 
-# Convert to factors
-cluster_labels <- as.factor(cluster_labels)
-true_labels <- as.factor(true_labels)
+# Checking levels
+print(levels(cluster_labels))
+print(levels(true_labels))
 
-# Compute confusion matrix
+# Calculating confusion matrix
 confusion_matrix <- confusionMatrix(cluster_labels, true_labels)
-
-# Print confusion matrix
 print(confusion_matrix)
 
 # Setosa

@@ -1,20 +1,15 @@
-# Load required libraries
-library(mlbench)
-library(movMF)
+# Load libraries
 library(tidyverse)
+library(movMF)
 library(caret)
+library(HSAUR2)
+library(mlbench)
 
-normalize_to_unit_sphere <- function(data) {
-    # Center the data
-    centered_data <- data - colMeans(data)
-
-    # Compute Euclidean norms
-    norms <- sqrt(rowSums(centered_data^2))
-
-    # Normalize to unit length
-    unit_data <- centered_data / norms
-
-    return(unit_data)
+# Normalize each row by its row sum
+rowwise_normalization <- function(data) {
+  row_sums <- rowSums(data)
+  normalized_data <- sweep(data, 1, row_sums, FUN = "/")
+  return(normalized_data)
 }
 
 # Load Wisconsin breast cancer data
@@ -28,7 +23,6 @@ BreastCancer$Cl.thickness <- as.numeric(as.character(BreastCancer$Cl.thickness))
 BreastCancer$Cell.size <- as.numeric(as.character(BreastCancer$Cell.size))
 BreastCancer$Cell.shape <- as.numeric(as.character(BreastCancer$Cell.shape))
 BreastCancer$Marg.adhesion <- as.numeric(as.character(BreastCancer$Marg.adhesion))
-BreastCancer$Cl.thickness <- as.numeric(as.character(BreastCancer$Cl.thickness))
 BreastCancer$Epith.c.size <- as.numeric(as.character(BreastCancer$Epith.c.size))
 BreastCancer$Bare.nuclei <- as.numeric(as.character(BreastCancer$Bare.nuclei))
 BreastCancer$Bl.cromatin <- as.numeric(as.character(BreastCancer$Bl.cromatin))
@@ -41,58 +35,48 @@ BreastCancer <- na.omit(BreastCancer)
 # True class labels
 true_labels <- BreastCancer$Class
 
-# Checking number of clusters
-levels(true_labels)
-
-# Print true labels
-print(true_labels)
-
-# Remove ID because it is irrelevant, removing also true_labels
+# Remove ID and true_labels
 BreastCancer <- BreastCancer[, -1]
 BreastCancer <- BreastCancer[, -10]
 
 # Converting to matrix
 BreastCancer_matrix <- as.matrix(BreastCancer)
 
-# Normalizing data and transforming it to matrix
-normalized_data <- normalize_to_unit_sphere(BreastCancer_matrix)
+# Applying row-wise normalization
+normalized_data <- rowwise_normalization(BreastCancer_matrix)
 
-# Check if data belongs to the unit sphere
-norms <- sqrt(rowSums(normalized_data^2))
-mean_norm <- mean(norms)
+# Check if the normalized data sums to 1
+row_sums <- rowSums(normalized_data)
+mean_row_sum <- mean(row_sums)
 
-if (abs(mean_norm - 1) < 0.01) {
-    print("The data belongs to the unit sphere.")
+if (abs(mean_row_sum - 1) < 0.01) {
+  print("The data is row-wise normalized.")
 } else {
-    print("The data does not belong to the unit sphere.")
+  print("The data is not row-wise normalized.")
 }
-# Performing movMF clustering
-k <- 2 # number of clusters
 
-fit <- movMF(normalized_data, k = k)
-print(fit)
-# Extract cluster assignments
-# cluster_assignments <- fit$cluster
-# Extract cluster assignments
-cluster_assignments <- predict(fit, normalized_data)
+# Perform clustering using movMF
+set.seed(123)
+movmf_result <- movMF(normalized_data, k = 2)
 
-# Create lookup table
-lookup_table <- data.frame(cluster = 1:k, label = levels(true_labels))
+# Deriving cluster assignments from the P matrix (probabilities)
+cluster_labels <- apply(movmf_result$P, 1, which.max)
 
 # Map cluster assignments to string labels using lookup table
-cluster_labels <- lookup_table$label[cluster_assignments]
+lookup_table <- data.frame(cluster = c(1, 2), label = levels(true_labels))
 
-# Reorder levels of cluster_labels to match true_labels
+# Map cluster assignments to string labels
+cluster_labels <- lookup_table[cluster_labels, "label"]
+
+# Ensure that cluster_labels and true_labels have the same levels
 cluster_labels <- factor(cluster_labels, levels = levels(true_labels))
 
-# Convert to factors
-cluster_labels <- as.factor(cluster_labels)
-true_labels <- as.factor(true_labels)
+# Checking levels
+print(levels(cluster_labels))
+print(levels(true_labels))
 
-# Compute confusion matrix
+# Calculating confusion matrix
 confusion_matrix <- confusionMatrix(cluster_labels, true_labels)
-
-# Print confusion matrix
 print(confusion_matrix)
 
 # Benign
@@ -114,7 +98,5 @@ precision_malign <- true_positives_malign / (true_positives_malign + false_posit
 macro_recall <- mean(c(recall_benign, recall_malign))
 macro_precision <- mean(c(precision_benign, precision_malign))
 
-
-# Print macro recall and macro precision
-print(paste("Macro recall:", macro_recall))
-print(paste("Macro precision:", macro_precision))
+print(paste("Recall:", macro_recall))
+print(paste("Precision:", macro_precision))

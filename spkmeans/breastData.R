@@ -6,18 +6,11 @@ library(cluster)
 library(caret)
 library(HSAUR2)
 
-# Normalize data points to unit sphere
-normalize_to_unit_sphere <- function(data) {
-    # Center the data
-    centered_data <- data - colMeans(data)
-
-    # Compute Euclidean norms
-    norms <- sqrt(rowSums(centered_data^2))
-
-    # Normalize to unit length
-    unit_data <- centered_data / norms
-
-    return(unit_data)
+# Normalize each row by its row sum
+rowwise_normalization <- function(data) {
+  row_sums <- rowSums(data)
+  normalized_data <- sweep(data, 1, row_sums, FUN = "/")
+  return(normalized_data)
 }
 
 # Load Wisconsin breast cancer data
@@ -31,7 +24,6 @@ BreastCancer$Cl.thickness <- as.numeric(as.character(BreastCancer$Cl.thickness))
 BreastCancer$Cell.size <- as.numeric(as.character(BreastCancer$Cell.size))
 BreastCancer$Cell.shape <- as.numeric(as.character(BreastCancer$Cell.shape))
 BreastCancer$Marg.adhesion <- as.numeric(as.character(BreastCancer$Marg.adhesion))
-BreastCancer$Cl.thickness <- as.numeric(as.character(BreastCancer$Cl.thickness))
 BreastCancer$Epith.c.size <- as.numeric(as.character(BreastCancer$Epith.c.size))
 BreastCancer$Bare.nuclei <- as.numeric(as.character(BreastCancer$Bare.nuclei))
 BreastCancer$Bl.cromatin <- as.numeric(as.character(BreastCancer$Bl.cromatin))
@@ -40,44 +32,39 @@ BreastCancer$Mitoses <- as.numeric(as.character(BreastCancer$Mitoses))
 
 # Cleaning null rows
 BreastCancer <- na.omit(BreastCancer)
+
 # True class labels
 true_labels <- BreastCancer$Class
 
-# Checking number of clusters
-levels(true_labels)
-
-# Print true labels
-print(true_labels)
-
-# Remove ID because it is irrelavant, removing also true_labels
+# Remove ID because it is irrelevant, removing also true_labels
 BreastCancer <- BreastCancer[, -1]
 BreastCancer <- BreastCancer[, -10]
-
-# Normalizing data
-# X_normalized <- scale(BreastCancer)
 
 # Converting to matrix
 BreastCancer_matrix <- as.matrix(BreastCancer)
 
-normalized_data <- normalize_to_unit_sphere(BreastCancer_matrix)
+# Applying row-wise normalization
+normalized_data <- rowwise_normalization(BreastCancer_matrix)
+
+# Check the normalized data
 head(normalized_data)
 
-# Check if data belongs to the unit sphere
-norms <- sqrt(rowSums(normalized_data^2))
-mean_norm <- mean(norms)
+# Check if each row sums to 1
+row_sums <- rowSums(normalized_data)
+mean_row_sum <- mean(row_sums)
 
-if (abs(mean_norm - 1) < 0.01) {
-    print("The data belongs to the unit sphere.")
+if (abs(mean_row_sum - 1) < 0.01) {
+  print("The data is row-wise normalized.")
 } else {
-    print("The data does not belong to the unit sphere.")
+  print("The data is not row-wise normalized.")
 }
 
-# set.seed(123)
-# Performing skmeans
+# Perform spherical k-means
+#set.seed(123)
 skmeans_result <- skmeans(normalized_data, k = 2)
 
-# Printig results
-skmeans_result$cluster
+# Print results
+print(skmeans_result$cluster)
 
 # Create lookup table
 lookup_table <- data.frame(cluster = c(1, 2), label = levels(true_labels))
@@ -94,6 +81,7 @@ confusion_matrix <- confusionMatrix(cluster_labels, true_labels)
 
 print(confusion_matrix)
 
+# Calculating recall and precision
 # Benign
 true_positives_benign <- confusion_matrix$table[1, 1]
 false_positives_benign <- confusion_matrix$table[1, 2]
@@ -115,3 +103,4 @@ macro_precision <- mean(c(precision_benign, precision_malign))
 
 print(paste("Recall:", macro_recall))
 print(paste("Precision:", macro_precision))
+

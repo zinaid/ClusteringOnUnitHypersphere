@@ -22,6 +22,14 @@ normalize_to_unit_sphere <- function(data) {
     return(unit_data)
 }
 
+
+# Normalize each row by its row sum
+rowwise_normalization <- function(data) {
+  row_sums <- rowSums(data)
+  normalized_data <- sweep(data, 1, row_sums, FUN = "/")
+  return(normalized_data)
+}
+
 # Taking true labels
 true_labels <- household$gender
 print(true_labels)
@@ -32,7 +40,7 @@ household <- household[, -5]
 household_matrix <- as.matrix(household)
 
 # Normalizing data and transforming it to matrix
-normalized_data <- normalize_to_unit_sphere(household_matrix)
+normalized_data <- rowwise_normalization(household_matrix)
 
 # Check if data belongs to the unit sphere
 norms <- sqrt(rowSums(normalized_data^2))
