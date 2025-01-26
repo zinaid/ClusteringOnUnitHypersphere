@@ -18,24 +18,20 @@ data_matrix <- as.matrix(data)
 # Performing movMF clustering
 # set.seed(123)
 k <- 2 # number of clusters
-fit <- movMF(data_matrix, k = k)
+fit <- movMF(data_matrix, k = k, nruns=10)
 
 # Extract cluster assignments
-cluster_assignments <- predict(fit, data_matrix)
-
-true_labels <- as.factor(true_labels)
-levels(true_labels)
-
-# Create lookup table
-lookup_table <- data.frame(cluster = 1:k, label = levels(true_labels))
+cluster_assignments <- apply(fit$P, 1, which.max)
 
 # Map cluster assignments to string labels using lookup table
+true_labels <- as.factor(true_labels)
+lookup_table <- data.frame(cluster = 1:k, label = levels(true_labels))
+
+# Map cluster assignments to string labels
 cluster_labels <- lookup_table$label[cluster_assignments]
 
 # Reorder levels of cluster_labels to match true_labels
 cluster_labels <- factor(cluster_labels, levels = levels(true_labels))
-# Convert to factors
-cluster_labels <- as.factor(cluster_labels)
 
 # Compute confusion matrix
 confusion_matrix <- confusionMatrix(cluster_labels, true_labels)
@@ -43,7 +39,6 @@ confusion_matrix <- confusionMatrix(cluster_labels, true_labels)
 # Print confusion matrix
 print(confusion_matrix)
 
-print(cluster_labels)
 
 # Cluster 1
 true_positives_cluster1 <- confusion_matrix$table[1, 1]
@@ -66,36 +61,3 @@ macro_precision <- mean(c(macro_precision_cluster1, macro_precision_cluster2))
 
 print(paste("Recall:", macro_recall))
 print(paste("Precision:", macro_precision))
-
-
-library(ggplot2)
-
-# Assuming your data is stored in a data frame called 'my_data'
-# and the features for clustering are stored in columns 'x', 'y', and 'z'
-
-# Create a scatter plot of two variables with cluster colors
-ggplot(my_data, aes(x = x, y = y, color = as.factor(cluster))) +
-    geom_point() +
-    labs(x = "X", y = "Y", color = "Cluster") +
-    ggtitle("Scatter Plot of X and Y with Cluster Colors")
-
-# Create a 3D scatter plot of three variables with cluster colors
-ggplot(my_data, aes(x = x, y = y, z = z, color = as.factor(cluster))) +
-    geom_point() +
-    labs(x = "X", y = "Y", z = "Z", color = "Cluster") +
-    ggtitle("3D Scatter Plot of X, Y, and Z with Cluster Colors")
-
-
-# Calculate the Jaccard Index
-cluster1 <- cluster_labels == 1
-cluster2 <- cluster_labels == 2
-true_cluster1 <- true_labels == 1
-true_cluster2 <- true_labels == 2
-
-intersection <- sum(cluster1 & true_cluster1) + sum(cluster2 & true_cluster2)
-union <- sum(cluster1 | true_cluster1) + sum(cluster2 | true_cluster2)
-
-jaccard_index <- intersection / union
-
-# Print the Jaccard Index
-print(paste("Jaccard Index:", jaccard_index))

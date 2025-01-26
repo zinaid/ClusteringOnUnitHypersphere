@@ -56,8 +56,8 @@ if (abs(mean_row_sum - 1) < 0.01) {
 }
 
 # Perform clustering using movMF
-set.seed(123)
-movmf_result <- movMF(normalized_data, k = 2)
+#set.seed(123)
+movmf_result <- movMF(normalized_data, k = 2, nruns=100)
 
 # Deriving cluster assignments from the P matrix (probabilities)
 cluster_labels <- apply(movmf_result$P, 1, which.max)
